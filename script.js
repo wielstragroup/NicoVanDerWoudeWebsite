@@ -410,7 +410,7 @@ function initSidebar() {
       monthSet.set(key, monthSet.get(key) + 1);
     });
     archiveList.innerHTML = Array.from(monthSet.entries()).map(([label, count]) =>
-      `<li><a href="blog.html">${label} (${count})</a></li>`
+      `<li><a href="blog.html?archive=${encodeURIComponent(label)}">${label} (${count})</a></li>`
     ).join('');
   }
 }
@@ -458,6 +458,17 @@ function initBlogPage() {
   let currentPage = 1;
   let currentCategory = 'all';
   let searchQuery = '';
+  
+  // Read URL params for archive filtering
+  const params = new URLSearchParams(window.location.search);
+  const archiveFilter = params.get('archive');
+
+  if (archiveFilter) {
+    const titleEl = document.querySelector('.page-title-block h1');
+    if (titleEl) titleEl.textContent = `Archief: ${archiveFilter}`;
+    const descEl = document.querySelector('.page-title-block p');
+    if (descEl) descEl.textContent = `Alle artikelen uit deze periode`;
+  }
 
   const categories = DataStore.getCategories();
   categories.forEach(cat => {
@@ -472,6 +483,9 @@ function initBlogPage() {
     let posts = DataStore.getPublishedPosts();
     if (currentCategory !== 'all') {
       posts = posts.filter(p => p.category === currentCategory);
+    }
+    if (archiveFilter) {
+      posts = posts.filter(p => formatDateShort(p.date) === archiveFilter);
     }
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
