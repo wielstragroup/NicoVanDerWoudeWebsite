@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Dashboard — Nico van der Woude</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Login Overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <h1>Welkom terug, <span>Nico</span></h1>
+      <p>Log in om je site te beheren</p>
+
+      <!-- Google Sign-In Button -->
+      <div id="googleSignInWrapper" style="display: flex; justify-content: center; margin: 20px 0;">
+        <div id="googleSignInBtn"></div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--text-meta); font-size: 0.8rem;">
+        <hr style="flex: 1; border: none; border-top: 1px solid var(--border);">
+        <span>of log in met wachtwoord</span>
+        <hr style="flex: 1; border: none; border-top: 1px solid var(--border);">
+      </div>
+
+      <div class="form-group">
+        <label for="loginEmail">E-mailadres</label>
+        <input type="email" id="loginEmail" placeholder="jouw@email.com">
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Wachtwoord</label>
+        <input type="password" id="loginPassword" placeholder="Voer je wachtwoord in...">
+      </div>
+      <button class="btn btn-primary" id="loginBtn">Inloggen</button>
+      <p class="login-error" id="loginError"></p>
+    </div>
+  </div>
+
+  <!-- Sidebar Toggle (mobile) -->
+  <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+
+  <!-- Admin Layout -->
+  <div class="admin-layout" id="adminLayout" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <h2>Nico <span>Dashboard</span></h2>
+        <p>Beheer je content</p>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="active" data-section="dashboard"><span class="icon">📊</span> Dashboard</a>
+        <a href="#" data-section="posts"><span class="icon">📝</span> Blogposts</a>
+        <a href="#" data-section="editor"><span class="icon">✏️</span> Nieuwe post</a>
+        <a href="#" data-section="research"><span class="icon">🔬</span> Onderzoek</a>
+        <a href="#" data-section="media"><span class="icon">🖼️</span> Media</a>
+        <a href="#" data-section="settings"><span class="icon">⚙️</span> Instellingen</a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="index.html"><span>←</span> Terug naar site</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+
+      <!-- ===== DASHBOARD SECTION ===== -->
+      <div class="editor-section active" id="section-dashboard">
+        <div class="admin-topbar">
+          <h1>Dashboard</h1>
+          <div class="admin-topbar-actions">
+            <button class="btn btn-primary btn-sm" onclick="navigateToSection('editor')">+ Nieuwe post</button>
+          </div>
+        </div>
+
+        <div class="dashboard-stats" id="dashStats"></div>
+
+        <div class="data-table-wrapper">
+          <div class="data-table-header">
+            <h3>Recente artikelen</h3>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Titel</th>
+                <th>Categorie</th>
+                <th>Status</th>
+                <th>Datum</th>
+                <th>Weergaven</th>
+                <th>Acties</th>
+              </tr>
+            </thead>
+            <tbody id="dashRecentPosts"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== POSTS SECTION ===== -->
+      <div class="editor-section" id="section-posts">
+        <div class="admin-topbar">
+          <h1>Alle blogposts</h1>
+          <div class="admin-topbar-actions">
+            <button class="btn btn-primary btn-sm" onclick="navigateToSection('editor')">+ Nieuwe post</button>
+          </div>
+        </div>
+        <div class="data-table-wrapper">
+          <div class="data-table-header">
+            <h3>Posts beheren</h3>
+            <input type="text" class="search-input" id="adminSearchPosts" placeholder="Zoek posts..." style="max-width: 250px; margin: 0;">
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Titel</th>
+                <th>Categorie</th>
+                <th>Status</th>
+                <th>Datum</th>
+                <th>Weergaven</th>
+                <th>Acties</th>
+              </tr>
+            </thead>
+            <tbody id="allPostsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== EDITOR SECTION ===== -->
+      <div class="editor-section" id="section-editor">
+        <div class="admin-topbar">
+          <h1 id="editorTitle">Nieuwe post</h1>
+          <div class="admin-topbar-actions">
+            <button class="btn btn-secondary btn-sm" id="previewToggle" onclick="togglePreview()">👁 Preview</button>
+            <button class="btn btn-secondary btn-sm" onclick="savePost('draft')">Opslaan als concept</button>
+            <button class="btn btn-primary btn-sm" onclick="savePost('published')">Publiceren</button>
+          </div>
+        </div>
+
+        <div class="editor-form" id="editorForm">
+          <input type="hidden" id="editPostId" value="">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="postTitleInput">Titel</label>
+              <input type="text" id="postTitleInput" placeholder="Titel van je artikel...">
+            </div>
+            <div class="form-group" style="max-width: 200px;">
+              <label for="postCategory">Categorie</label>
+              <select id="postCategory"></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="postExcerpt">Samenvatting</label>
+            <input type="text" id="postExcerpt" placeholder="Korte samenvatting voor het overzicht...">
+          </div>
+
+          <div class="form-group">
+            <label for="postTags">Tags (komma-gescheiden)</label>
+            <input type="text" id="postTags" placeholder="bijv. AI, Onderwijs, Innovatie">
+          </div>
+
+          <div class="form-group">
+            <label>Uitgelichte afbeelding</label>
+            <div class="image-upload-zone" id="featuredImageZone">
+              <div class="icon">🖼️</div>
+              <p>Klik of sleep een afbeelding hierheen<br><strong>JPG, PNG, WebP</strong> — max 2MB</p>
+              <input type="file" id="featuredImageInput" accept="image/*">
+            </div>
+            <div id="featuredImagePreview" class="image-preview-grid"></div>
+          </div>
+
+          <div class="form-group">
+            <label>Inhoud (Markdown)</label>
+            <div class="editor-toolbar">
+              <button class="toolbar-btn" onclick="insertMd('**','**')" title="Vet">𝐁</button>
+              <button class="toolbar-btn" onclick="insertMd('*','*')" title="Cursief">𝐼</button>
+              <div class="toolbar-separator"></div>
+              <button class="toolbar-btn" onclick="insertMd('# ','')" title="Kop 1">H1</button>
+              <button class="toolbar-btn" onclick="insertMd('## ','')" title="Kop 2">H2</button>
+              <button class="toolbar-btn" onclick="insertMd('### ','')" title="Kop 3">H3</button>
+              <div class="toolbar-separator"></div>
+              <button class="toolbar-btn" onclick="insertMd('- ','')" title="Lijst">• Lijst</button>
+              <button class="toolbar-btn" onclick="insertMd('1. ','')" title="Genummerde lijst">1. Lijst</button>
+              <button class="toolbar-btn" onclick="insertMd('> ','')" title="Citaat">❝ Citaat</button>
+              <div class="toolbar-separator"></div>
+              <button class="toolbar-btn" onclick="insertMd('[','](url)')" title="Link">🔗 Link</button>
+              <button class="toolbar-btn" onclick="insertImage()" title="Afbeelding">🖼️ Afbeelding</button>
+              <div class="toolbar-separator"></div>
+              <button class="toolbar-btn" onclick="insertMd('`','`')" title="Code">⌨ Code</button>
+              <button class="toolbar-btn" onclick="insertMd('---\n','')" title="Lijn">— Lijn</button>
+            </div>
+            <textarea class="editor-textarea" id="postContentInput" placeholder="Schrijf je artikel in Markdown..."></textarea>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="editor-preview" id="editorPreview" style="display: none;">
+          <h4>Preview</h4>
+          <div class="preview-content" id="previewContent"></div>
+        </div>
+      </div>
+
+      <!-- ===== RESEARCH SECTION ===== -->
+      <div class="editor-section" id="section-research">
+        <div class="admin-topbar">
+          <h1>Onderzoeksprojecten</h1>
+          <div class="admin-topbar-actions">
+            <button class="btn btn-primary btn-sm" onclick="showResearchForm()">+ Nieuw project</button>
+          </div>
+        </div>
+
+        <!-- Research form -->
+        <div class="editor-form" id="researchForm" style="display: none; margin-bottom: 2rem;">
+          <input type="hidden" id="editResearchId" value="">
+          <div class="form-group">
+            <label for="researchTitle">Titel</label>
+            <input type="text" id="researchTitle" placeholder="Naam van het project...">
+          </div>
+          <div class="form-group">
+            <label for="researchDesc">Beschrijving</label>
+            <textarea id="researchDesc" placeholder="Omschrijving van het onderzoek..." style="min-height: 100px;"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="researchStatus">Status</label>
+              <select id="researchStatus">
+                <option value="active">Lopend</option>
+                <option value="completed">Afgerond</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="researchYear">Periode</label>
+              <input type="text" id="researchYear" placeholder="bijv. 2025 — heden">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="researchTags">Tags (komma-gescheiden)</label>
+            <input type="text" id="researchTags" placeholder="bijv. Data, Analyse">
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-primary btn-sm" onclick="saveResearch()">Opslaan</button>
+            <button class="btn btn-secondary btn-sm" onclick="hideResearchForm()">Annuleren</button>
+          </div>
+        </div>
+
+        <!-- Research list -->
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Titel</th>
+                <th>Status</th>
+                <th>Periode</th>
+                <th>Acties</th>
+              </tr>
+            </thead>
+            <tbody id="researchTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== MEDIA SECTION ===== -->
+      <div class="editor-section" id="section-media">
+        <div class="admin-topbar">
+          <h1>Mediabibliotheek</h1>
+          <div class="admin-topbar-actions">
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('mediaUploadInput').click()">+ Upload afbeelding</button>
+            <input type="file" id="mediaUploadInput" accept="image/*" multiple style="display: none;">
+          </div>
+        </div>
+
+        <div class="image-upload-zone" id="mediaDropZone" style="margin-bottom: 2rem;">
+          <div class="icon">📁</div>
+          <p>Sleep afbeeldingen hierheen of klik op "Upload"<br><strong>JPG, PNG, WebP</strong></p>
+        </div>
+
+        <div class="image-preview-grid" id="mediaGrid" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));">
+          <!-- Filled by JS -->
+        </div>
+
+        <div class="empty-state" id="mediaEmpty" style="display: none;">
+          <div class="icon">🖼️</div>
+          <h3>Nog geen media</h3>
+          <p>Upload afbeeldingen om ze te gebruiken in je posts</p>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS SECTION ===== -->
+      <div class="editor-section" id="section-settings">
+        <div class="admin-topbar">
+          <h1>Instellingen</h1>
+          <div class="admin-topbar-actions">
+            <button class="btn btn-primary btn-sm" onclick="saveSettings()">Opslaan</button>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>📄 Site-instellingen</h3>
+            <div class="form-group">
+              <label for="settingSiteName">Site naam</label>
+              <input type="text" id="settingSiteName">
+            </div>
+            <div class="form-group">
+              <label for="settingSiteSubtitle">Ondertitel</label>
+              <input type="text" id="settingSiteSubtitle">
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>📑 Over-pagina</h3>
+            <div class="form-group">
+              <label for="settingAboutSubtitle">Ondertitel over-pagina</label>
+              <input type="text" id="settingAboutSubtitle">
+            </div>
+            <div class="form-group">
+              <label for="settingAboutText">Over-tekst</label>
+              <textarea id="settingAboutText" style="min-height: 150px;"></textarea>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>🏷️ Categorieën beheren</h3>
+            <div class="categories-list" id="categoriesList"></div>
+            <div class="add-category-row">
+              <input type="text" id="newCategoryInput" placeholder="Nieuwe categorie...">
+              <button class="btn btn-sm btn-secondary" onclick="addCategory()">Toevoegen</button>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>💾 Data beheer</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Exporteer of importeer al je data als JSON-bestand voor een backup.</p>
+            <div class="data-actions">
+              <button class="btn btn-sm btn-secondary" onclick="exportData()">📥 Exporteer data</button>
+              <button class="btn btn-sm btn-secondary" onclick="document.getElementById('importFile').click()">📤 Importeer data</button>
+              <input type="file" id="importFile" accept=".json" style="display: none;">
+            </div>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-glass);">
+              <button class="btn btn-sm btn-danger" onclick="resetData()">🗑️ Alle data resetten</button>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>🔒 Wachtwoord wijzigen</h3>
+            <div class="form-group">
+              <label for="currentPassword">Huidig wachtwoord</label>
+              <input type="password" id="currentPassword">
+            </div>
+            <div class="form-group">
+              <label for="newPassword">Nieuw wachtwoord</label>
+              <input type="password" id="newPassword">
+            </div>
+            <button class="btn btn-sm btn-secondary" onclick="changePassword()">Wachtwoord wijzigen</button>
+          </div>
+
+          <div class="settings-card" style="grid-column: 1 / -1;">
+            <h3>👥 Beheerders</h3>
+            <p style="font-size: 0.85rem; color: var(--text-meta); margin-bottom: 16px;">Beheer wie toegang heeft tot het dashboard. Voeg beheerders toe via e-mailadres.</p>
+            <div class="data-table-wrapper" style="margin-bottom: 16px;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>E-mailadres</th>
+                    <th>Naam</th>
+                    <th>Rol</th>
+                    <th>Acties</th>
+                  </tr>
+                </thead>
+                <tbody id="adminsTable"></tbody>
+              </table>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end;">
+              <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                <label for="newAdminEmail">E-mailadres</label>
+                <input type="email" id="newAdminEmail" placeholder="email@voorbeeld.nl">
+              </div>
+              <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 150px;">
+                <label for="newAdminName">Naam</label>
+                <input type="text" id="newAdminName" placeholder="Naam">
+              </div>
+              <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 150px;">
+                <label for="newAdminPassword">Wachtwoord</label>
+                <input type="text" id="newAdminPassword" placeholder="Wachtwoord">
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="addAdmin()" style="height: 40px;">+ Beheerder toevoegen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+      <h3>Verwijderen bevestigen</h3>
+      <p id="deleteModalText">Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan worden gemaakt.</p>
+      <div class="modal-actions">
+        <button class="btn btn-sm btn-secondary" onclick="closeDeleteModal()">Annuleren</button>
+        <button class="btn btn-sm btn-danger" id="confirmDeleteBtn">Verwijderen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+  <script src="script.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

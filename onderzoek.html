@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Onderzoeksprojecten van Nico van der Woude.">
+  <title>Onderzoek — Nico van der Woude</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title"><a href="index.html">Nico van der Woude</a></h1>
+      <span class="site-tagline">Onderzoeker &amp; Schrijver</span>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <div class="container nav-inner">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="onderzoek.html" class="active">Onderzoek</a></li>
+        <li><a href="over.html">Over</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    </div>
+  </nav>
+
+  <div class="site-content">
+    <div class="container">
+      <div class="content-layout">
+
+        <main class="main-content">
+          <div class="page-title-block">
+            <h1>Onderzoek</h1>
+            <p>Lopende en afgeronde onderzoeksprojecten</p>
+          </div>
+
+          <div class="research-grid" id="researchGrid"></div>
+
+          <div class="empty-state" id="researchEmpty" style="display: none;">
+            <div class="icon">🔬</div>
+            <h3>Nog geen onderzoeksprojecten</h3>
+            <p>Projecten worden hier getoond zodra ze zijn toegevoegd via het dashboard</p>
+          </div>
+        </main>
+
+        <aside class="sidebar">
+          <div class="widget">
+            <h3>Contact</h3>
+            <p>Interesse in mijn onderzoek of wilt u samenwerken? Mail mij via <a href="mailto:woudwise@gmail.com">woudwise@gmail.com</a></p>
+          </div>
+          <div class="widget">
+            <h3>Categorieën</h3>
+            <ul class="widget-list" id="sidebarCategories"></ul>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="onderzoek.html">Onderzoek</a></li>
+        <li><a href="over.html">Over</a></li>
+      </ul>
+      <p>&copy; 2026 Nico van der Woude. Website gebouwd door Wielstra Group.</p>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

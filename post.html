@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lees dit artikel van Nico van der Woude.">
+  <title>Artikel — Nico van der Woude</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title"><a href="index.html">Nico van der Woude</a></h1>
+      <span class="site-tagline">Onderzoeker &amp; Schrijver</span>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <div class="container nav-inner">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="blog.html" class="active">Blog</a></li>
+        <li><a href="onderzoek.html">Onderzoek</a></li>
+        <li><a href="over.html">Over</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    </div>
+  </nav>
+
+  <div class="site-content">
+    <div class="container">
+      <div class="content-layout">
+
+        <main class="main-content">
+          <article class="single-post">
+            <div class="post-header" id="postHeader">
+              <div class="spinner"></div>
+            </div>
+            <img class="post-hero-image" id="postHeroImage" style="display:none;" alt="">
+            <div class="post-content" id="postContent"></div>
+          </article>
+
+          <div style="margin-top: 24px;">
+            <a href="blog.html" class="btn btn-secondary">← Terug naar blog</a>
+          </div>
+        </main>
+
+        <aside class="sidebar">
+          <div class="widget">
+            <h3>Contact</h3>
+            <p>Meer weten rond de artikelen op deze site? Schroom niet om mij te mailen via <a href="mailto:woudwise@gmail.com">woudwise@gmail.com</a></p>
+          </div>
+          <div class="widget">
+            <h3>Categorieën</h3>
+            <ul class="widget-list" id="sidebarCategories"></ul>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="onderzoek.html">Onderzoek</a></li>
+        <li><a href="over.html">Over</a></li>
+      </ul>
+      <p>&copy; 2026 Nico van der Woude. Website gebouwd door Wielstra Group.</p>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

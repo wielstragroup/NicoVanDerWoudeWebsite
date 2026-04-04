@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Nico van der Woude — Onderzoeker en schrijver. Blog over genealogie, geschiedenis, debat en meer.">
+  <title>Nico van der Woude — Blog & Onderzoek</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title"><a href="index.html">Nico van der Woude</a></h1>
+      <span class="site-tagline">Onderzoeker &amp; Schrijver</span>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="main-nav">
+    <div class="container nav-inner">
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="onderzoek.html">Onderzoek</a></li>
+        <li><a href="over.html">Over</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="site-content">
+    <div class="container">
+      <div class="content-layout">
+
+        <!-- Main Column -->
+        <main class="main-content">
+          <!-- Stats -->
+          <div class="stats-row" id="statsRow"></div>
+
+          <!-- Recent Posts -->
+          <div class="page-title-block">
+            <h1>Recente artikelen</h1>
+            <p>De laatste blogposts en inzichten</p>
+          </div>
+
+          <div class="posts-grid" id="recentPosts"></div>
+
+          <div style="text-align: center; margin-top: 24px;">
+            <a href="blog.html" class="btn btn-secondary">Bekijk alle artikelen →</a>
+          </div>
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="widget">
+            <h3>Contact</h3>
+            <p>Meer weten rond de artikelen op deze site? Aanvullingen? Schroom niet om mij te mailen via <a href="mailto:woudwise@gmail.com">woudwise@gmail.com</a> — Alvast bedankt voor uw feedback.</p>
+          </div>
+
+          <div class="widget">
+            <h3>Categorieën</h3>
+            <ul class="widget-list" id="sidebarCategories"></ul>
+          </div>
+
+          <div class="widget">
+            <h3>Archieven</h3>
+            <ul class="widget-list" id="sidebarArchives"></ul>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="onderzoek.html">Onderzoek</a></li>
+        <li><a href="over.html">Over</a></li>
+        <li><a href="admin.html">Dashboard</a></li>
+      </ul>
+      <p>&copy; 2026 Nico van der Woude. Website gebouwd door Wielstra Group.</p>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
