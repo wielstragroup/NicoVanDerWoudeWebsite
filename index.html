@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Nico van der Woude — Onderzoeker en schrijver. Blog over genealogie, geschiedenis, debat en meer.">
   <title>Nico van der Woude — Blog & Onderzoek</title>
-  <link rel="stylesheet" href="style.css">
+  <link id="theme-default" rel="stylesheet" href="style.css">
+  <link id="theme-library" rel="stylesheet" href="style-library.css" disabled>
+  <script>if(localStorage.getItem('theme')==='library'){document.getElementById('theme-default').disabled=true;document.getElementById('theme-library').disabled=false;}</script>
 </head>
 <body>
 
@@ -26,7 +28,10 @@
         <li><a href="onderzoek.html">Onderzoek</a></li>
         <li><a href="over.html">Over</a></li>
       </ul>
-      <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Wissel thema" aria-pressed="false">📚 Bibliotheek</button>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+      </div>
     </div>
   </nav>
 
@@ -93,5 +98,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="script.js"></script>
+  <script src="theme-switcher.js"></script>
 </body>
 </html>
