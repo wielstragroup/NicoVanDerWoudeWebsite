@@ -577,11 +577,15 @@ function initPostPage() {
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.content = post.excerpt;
 
+  const words = (post.content || '').trim().split(/\s+/).length;
+  const readTime = Math.max(1, Math.ceil(words / 200));
+
   postHeader.innerHTML = `
     <h1>${post.title}</h1>
     <div class="post-meta">
       <span class="post-category">${post.category}</span>
-      <span class="post-date">📅 ${formatDate(post.date)}</span>
+      <span class="post-date" style="margin-right: 12px;">📅 ${formatDate(post.date)}</span>
+      <span class="post-readtime">⏱️ ${readTime} min. lezen</span>
     </div>
     ${post.tags ? `<div class="tags-list">${post.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
   `;
@@ -593,6 +597,53 @@ function initPostPage() {
   }
 
   postContent.innerHTML = parseMarkdown(post.content);
+
+  // Related Posts
+  const related = DataStore.getPublishedPosts()
+    .filter(p => p.category === post.category && p.id !== post.id)
+    .slice(0, 2);
+  
+  let relatedHTML = '';
+  if (related.length > 0) {
+    relatedHTML = `
+      <div class="related-posts" style="margin-top: 48px; border-top: 2px solid var(--border); padding-top: 32px;">
+        <h3 style="margin-bottom: 24px; font-family: var(--font-heading); font-style: italic;">Misschien vind je dit ook interessant...</h3>
+        <div class="posts-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          ${related.map(createPostCard).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // Share Buttons
+  const shareURL = encodeURIComponent(window.location.href);
+  const shareTitle = encodeURIComponent(post.title);
+  
+  const shareHTML = `
+    <div class="share-bar" style="margin-top: 48px; padding: 24px; background: var(--surface); border-radius: 12px; border: 1px solid var(--border);">
+      <h4 style="margin-bottom: 16px; margin-top: 0; font-family: var(--font-heading);">Deel dit artikel</h4>
+      <div class="share-buttons" style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=${shareURL}&title=${shareTitle}" target="_blank" class="btn btn-sm btn-secondary share-btn linkedin">💼 LinkedIn</a>
+        <a href="https://twitter.com/intent/tweet?url=${shareURL}&text=${shareTitle}" target="_blank" class="btn btn-sm btn-secondary share-btn twitter">🐦 X (Twitter)</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${shareURL}" target="_blank" class="btn btn-sm btn-secondary share-btn facebook">📘 Facebook</a>
+        <a href="https://api.whatsapp.com/send?text=${shareTitle}%20${shareURL}" target="_blank" class="btn btn-sm btn-secondary share-btn whatsapp">💬 WhatsApp</a>
+        <a href="mailto:?subject=${shareTitle}&body=${shareURL}" class="btn btn-sm btn-secondary share-btn email">✉️ E-mail</a>
+        <div style="flex: 1; min-width: 10px;"></div>
+        <button onclick="window.print()" class="btn btn-sm btn-primary share-btn print">🖨️ Opslaan als PDF / Print</button>
+      </div>
+    </div>
+  `;
+
+  // Insert below post content
+  // Remove previously added elements if they exist (in case of re-init)
+  const existingExtras = document.querySelectorAll('.post-extras');
+  existingExtras.forEach(el => el.remove());
+
+  const extrasDiv = document.createElement('div');
+  extrasDiv.className = 'post-extras container'; // To align with main layout
+  extrasDiv.innerHTML = shareHTML + relatedHTML;
+  
+  postContent.parentNode.insertBefore(extrasDiv, postContent.nextSibling);
 }
 
 // ---- Research Page ----

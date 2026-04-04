@@ -240,6 +240,47 @@ function renderDashboard() {
 
   const recent = posts.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
   recentEl.innerHTML = recent.map(postToTableRow).join('');
+
+  if (typeof Chart !== 'undefined') {
+    renderChart(posts);
+  }
+}
+
+let dashboardChartInstance = null;
+function renderChart(posts) {
+  const ctx = document.getElementById('viewsChart');
+  if (!ctx) return;
+  
+  if (dashboardChartInstance) {
+    dashboardChartInstance.destroy();
+  }
+
+  const topPosts = [...posts].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 10);
+  const labels = topPosts.map(p => p.title.length > 30 ? p.title.substring(0, 30) + '...' : p.title);
+  const data = topPosts.map(p => p.views || 0);
+
+  dashboardChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Aantal weergaven',
+        data: data,
+        backgroundColor: '#2563eb',
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
 }
 
 function postToTableRow(post) {

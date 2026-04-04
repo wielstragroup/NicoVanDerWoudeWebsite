@@ -7,6 +7,7 @@
   <title>Dashboard — Nico van der Woude</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <!-- Login Overlay -->
@@ -76,6 +77,11 @@
         </div>
 
         <div class="dashboard-stats" id="dashStats"></div>
+
+        <div class="dashboard-chart-container" style="background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; height: 350px;">
+          <h3 style="font-family: var(--font-heading); margin-bottom: 16px;">Top 10 Artikelen (Weergaven)</h3>
+          <canvas id="viewsChart"></canvas>
+        </div>
 
         <div class="data-table-wrapper">
           <div class="data-table-header">

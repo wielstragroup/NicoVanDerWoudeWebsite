@@ -731,6 +731,43 @@ img { max-width: 100%; height: auto; display: block; }
     border-top: 1px solid rgba(255,255,255,0.05);
   }
 
-  .site-header h1 { font-size: 1.4rem; }
   .site-header .container { flex-direction: column; gap: 4px; }
+}
+
+/* ============ PRINT STYLES ============ */
+@media print {
+  body {
+    background: transparent !important;
+    color: #000;
+  }
+  .site-header,
+  .main-nav,
+  .sidebar,
+  .site-footer,
+  .post-extras,
+  .search-bar,
+  .filter-tags,
+  .pagination,
+  .nav-toggle {
+    display: none !important;
+  }
+  .site-content {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .content-layout {
+    display: block !important;
+  }
+  .single-post {
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+  @page {
+    margin: 2cm;
+  }
 }
