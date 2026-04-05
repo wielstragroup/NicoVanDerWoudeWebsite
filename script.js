@@ -222,7 +222,7 @@ const DataStore = {
       // Settings
       if (!settingsDoc.exists) {
         this._settings = this.getDefaultSettings();
-        db.collection('app').doc('settings').set(this._settings).catch(() => {});
+        db.collection('app').doc('settings').set(this._settings).catch(e => console.error("Failed to save default settings", e));
       } else {
         this._settings = settingsDoc.data();
       }
@@ -230,7 +230,7 @@ const DataStore = {
       // Categories
       if (!categoriesDoc.exists) {
         this._categories = this.getDefaultCategories();
-        db.collection('app').doc('categories').set({ list: this._categories }).catch(() => {});
+        db.collection('app').doc('categories').set({ list: this._categories }).catch(e => console.error("Failed to save default categories", e));
       } else {
         this._categories = categoriesDoc.data().list || [];
       }
@@ -240,9 +240,7 @@ const DataStore = {
         this._posts = this.getDefaultPosts();
         const batch = db.batch();
         this._posts.forEach(p => batch.set(db.collection('posts').doc(p.id.toString()), p));
-        batch.commit().catch(() => {});
-      } else {
-        this._posts = postsSnap.docs.map(d => d.data());
+        batch.commit().catch(e => console.error("Failed to save default posts", e));
       }
 
       // Research
@@ -250,9 +248,7 @@ const DataStore = {
         this._research = this.getDefaultResearch();
         const batch = db.batch();
         this._research.forEach(r => batch.set(db.collection('research').doc(r.id.toString()), r));
-        batch.commit().catch(() => {});
-      } else {
-        this._research = resSnap.docs.map(d => d.data());
+        batch.commit().catch(e => console.error("Failed to save default research", e));
       }
 
       this._saveCache();
