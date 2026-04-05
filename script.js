@@ -175,50 +175,87 @@ const DataStore = {
     };
   },
 
-  async init() {
+  _cacheKey: 'nvdw_cache',
+  _cacheTTL: 10 * 60 * 1000, // 10 minutes
+
+  _saveCache() {
     try {
-      // Load Settings and Categories
-      const settingsDoc = await db.collection('app').doc('settings').get();
+      localStorage.setItem(this._cacheKey, JSON.stringify({
+        posts: this._posts,
+        research: this._research,
+        categories: this._categories,
+        settings: this._settings,
+        ts: Date.now()
+      }));
+    } catch (e) {}
+  },
+
+  clearCache() {
+    try { localStorage.removeItem(this._cacheKey); } catch (e) {}
+  },
+
+  async init() {
+    // 1. Try fresh cache for near-instant load on repeat visits
+    try {
+      const raw = localStorage.getItem(this._cacheKey);
+      if (raw) {
+        const cached = JSON.parse(raw);
+        if (Date.now() - cached.ts < this._cacheTTL) {
+          this._posts = cached.posts || this.getDefaultPosts();
+          this._research = cached.research || this.getDefaultResearch();
+          this._categories = cached.categories || this.getDefaultCategories();
+          this._settings = cached.settings || this.getDefaultSettings();
+          return;
+        }
+      }
+    } catch (e) {}
+
+    // 2. No fresh cache — fetch all collections in parallel
+    try {
+      const [settingsDoc, categoriesDoc, postsSnap, resSnap] = await Promise.all([
+        db.collection('app').doc('settings').get(),
+        db.collection('app').doc('categories').get(),
+        db.collection('posts').get(),
+        db.collection('research').get()
+      ]);
+
+      // Settings
       if (!settingsDoc.exists) {
         this._settings = this.getDefaultSettings();
-        await db.collection('app').doc('settings').set(this._settings);
+        db.collection('app').doc('settings').set(this._settings).catch(() => {});
       } else {
         this._settings = settingsDoc.data();
       }
 
-      const categoriesDoc = await db.collection('app').doc('categories').get();
+      // Categories
       if (!categoriesDoc.exists) {
         this._categories = this.getDefaultCategories();
-        await db.collection('app').doc('categories').set({ list: this._categories });
+        db.collection('app').doc('categories').set({ list: this._categories }).catch(() => {});
       } else {
         this._categories = categoriesDoc.data().list || [];
       }
 
-      // Load Posts
-      const postsSnap = await db.collection('posts').get();
+      // Posts
       if (postsSnap.empty) {
         this._posts = this.getDefaultPosts();
         const batch = db.batch();
-        this._posts.forEach(p => {
-          batch.set(db.collection('posts').doc(p.id.toString()), p);
-        });
-        await batch.commit();
+        this._posts.forEach(p => batch.set(db.collection('posts').doc(p.id.toString()), p));
+        batch.commit().catch(() => {});
       } else {
         this._posts = postsSnap.docs.map(d => d.data());
       }
 
-      // Load Research
-      const resSnap = await db.collection('research').get();
+      // Research
       if (resSnap.empty) {
         this._research = this.getDefaultResearch();
         const batch = db.batch();
-        this._research.forEach(r => {
-          batch.set(db.collection('research').doc(r.id.toString()), r);
-        });
-        await batch.commit();
+        this._research.forEach(r => batch.set(db.collection('research').doc(r.id.toString()), r));
+        batch.commit().catch(() => {});
       } else {
         this._research = resSnap.docs.map(d => d.data());
       }
+
+      this._saveCache();
     } catch (e) {
       console.error("Firebase fetch error", e);
       this._posts = this.getDefaultPosts();
@@ -252,6 +289,7 @@ const DataStore = {
       batch.delete(db.collection('posts').doc(id.toString()));
     });
     await batch.commit();
+    this.clearCache();
   },
   async saveResearch(research) {
     const oldIds = this._research.map(r => r.id.toString());
@@ -268,14 +306,17 @@ const DataStore = {
       batch.delete(db.collection('research').doc(id.toString()));
     });
     await batch.commit();
+    this.clearCache();
   },
   async saveCategories(categories) {
     this._categories = categories;
     await db.collection('app').doc('categories').set({ list: categories });
+    this.clearCache();
   },
   async saveSettings(settings) {
     this._settings = settings;
     await db.collection('app').doc('settings').set(settings);
+    this.clearCache();
   },
   async incrementViews(slug) {
     const post = this._posts.find(p => p.slug === slug);
